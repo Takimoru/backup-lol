@@ -2,7 +2,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useAuth } from "../../contexts/AuthContext";
 import { useState } from "react";
-import { Plus, Edit, Trash2, UserCheck } from "lucide-react";
+import { Plus, Edit, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Id } from "../../../convex/_generated/dataModel";
 

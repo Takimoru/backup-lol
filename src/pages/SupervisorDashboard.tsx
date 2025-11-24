@@ -2,7 +2,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useAuth } from "../contexts/AuthContext";
 import { useState } from "react";
-import { FileText, MessageSquare, CheckCircle, XCircle } from "lucide-react";
+import { FileText, MessageSquare, CheckCircle } from "lucide-react";
 
 export function SupervisorDashboard() {
   const { user } = useAuth();

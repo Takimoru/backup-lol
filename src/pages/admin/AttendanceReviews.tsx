@@ -1,7 +1,7 @@
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useState } from "react";
-import { CheckCircle, Calendar, Users, Download } from "lucide-react";
+import { CheckCircle, Download } from "lucide-react";
 import { format } from "date-fns";
 import { Id } from "../../../convex/_generated/dataModel";
 
@@ -80,10 +80,12 @@ export function AttendanceReviews() {
     const team = teamsForProgram?.find((t) => t._id === selectedTeam);
     if (!team) return;
 
+    const programTitle = programs?.find(p => p._id === selectedProgram)?.title || "Unknown";
+
     const members = getTeamMembers(team);
     let csvContent = `Weekly Attendance Summary - ${formatWeekRange(attendanceSummary)}\n`;
     csvContent += `Team: ${team.name || `Team ${team._id.slice(-6)}`}\n`;
-    csvContent += `Program: ${team.program?.title || "Unknown"}\n\n`;
+    csvContent += `Program: ${programTitle}\n\n`;
 
     csvContent += "Student,";
     attendanceSummary.daily.forEach((day: any) => {
@@ -184,7 +186,7 @@ export function AttendanceReviews() {
                 Weekly Attendance ({formatWeekRange(attendanceSummary)})
               </h2>
               <p className="text-sm text-gray-500">
-                {teamsForProgram?.find((t) => t._id === selectedTeam)?.program?.title || "Unknown Program"}
+                {programs?.find(p => p._id === selectedProgram)?.title || "Unknown Program"}
               </p>
             </div>
             <div className="flex items-center space-x-2">

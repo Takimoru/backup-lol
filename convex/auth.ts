@@ -261,7 +261,7 @@ export const isAdmin = query({
 // Get admin emails list (for reference)
 export const getAdminEmails = query({
   args: {},
-  handler: async (ctx) => {
+  handler: async () => {
     const adminEmails =
       process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim()) || [];
     return adminEmails;
@@ -273,7 +273,7 @@ export const isAllowedDomain = query({
   args: {
     email: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (_ctx, args) => {
     // TODO: Configure allowed domain in environment or settings
     // For now, return true - you should add domain validation
     const allowedDomains = process.env.ALLOWED_EMAIL_DOMAINS?.split(",") || [];

@@ -2,7 +2,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useAuth } from "../../contexts/AuthContext";
 import { useState } from "react";
-import { FileText, CheckCircle, X, Eye, Download } from "lucide-react";
+import { CheckCircle, X, Eye } from "lucide-react";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -270,19 +270,21 @@ export function FinalReports() {
                   <h3 className="font-semibold text-gray-900 mb-2">Tasks</h3>
                   <div className="space-y-2">
                     {selectedReportData.tasks.map((task) => (
-                      <div
-                        key={task._id}
-                        className="flex items-center space-x-2 p-2 bg-gray-50 rounded"
-                      >
-                        {task.completed ? (
-                          <CheckCircle className="w-4 h-4 text-green-600" />
-                        ) : (
-                          <X className="w-4 h-4 text-gray-400" />
-                        )}
-                        <span className={task.completed ? "line-through text-gray-500" : ""}>
-                          {task.title}
-                        </span>
-                      </div>
+                      task && (
+                        <div
+                          key={task._id}
+                          className="flex items-center space-x-2 p-2 bg-gray-50 rounded"
+                        >
+                          {task.completed ? (
+                            <CheckCircle className="w-4 h-4 text-green-600" />
+                          ) : (
+                            <X className="w-4 h-4 text-gray-400" />
+                          )}
+                          <span className={task.completed ? "line-through text-gray-500" : ""}>
+                            {task.title}
+                          </span>
+                        </div>
+                      )
                     ))}
                   </div>
                 </div>
@@ -309,7 +311,7 @@ export function FinalReports() {
               {selectedReportData.status === "submitted" && (
                 <div className="flex space-x-2 pt-4 border-t">
                   <button
-                    onClick={() => handleApproveReport(selectedReport._id)}
+                    onClick={() => handleApproveReport(selectedReport)}
                     className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
                   >
                     Approve Report
@@ -318,7 +320,7 @@ export function FinalReports() {
                     onClick={() => {
                       const comment = prompt("Enter revision comment:");
                       if (comment) {
-                        handleRequestRevision(selectedReport._id, comment);
+                        handleRequestRevision(selectedReport, comment);
                       }
                     }}
                     className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700"

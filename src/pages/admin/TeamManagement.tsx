@@ -14,7 +14,34 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { format } from "date-fns";
-import { Id } from "../../../convex/_generated/dataModel";
+import { Id, Doc } from "../../../convex/_generated/dataModel";
+
+interface AttendanceSummary {
+  teamId: Id<"teams">;
+  week: string;
+  startDate: string;
+  endDate: string;
+  daily: {
+    date: string;
+    attendees: {
+      userId: Id<"users">;
+      userName: string;
+      timestamp: string;
+    }[];
+  }[];
+  totals: {
+    userId: string;
+    userName: string;
+    presentCount: number;
+    lastCheckIn?: string;
+  }[];
+}
+
+interface EnrichedTeam extends Doc<"teams"> {
+  leader: Doc<"users"> | null;
+  members: (Doc<"users"> | null)[];
+  supervisor: Doc<"users"> | null;
+}
 
 function getCurrentWeek(): string {
   const now = new Date();
@@ -26,7 +53,7 @@ function getCurrentWeek(): string {
   return `${now.getFullYear()}-W${weekNumber.toString().padStart(2, "0")}`;
 }
 
-function formatWeekRange(summary: any): string {
+function formatWeekRange(summary: AttendanceSummary | undefined | null): string {
   if (!summary || !summary.daily || summary.daily.length === 0) return "";
   const first = summary.daily[0].date;
   const last = summary.daily[summary.daily.length - 1].date;
@@ -40,11 +67,14 @@ function formatDate(dateStr: string): string {
   return format(new Date(dateStr), "MMM dd");
 }
 
-function getTeamMembers(team: any): any[] {
+function getTeamMembers(team: EnrichedTeam | undefined | null): Doc<"users">[] {
   if (!team) return [];
-  const members = [];
+  const members: Doc<"users">[] = [];
   if (team.leader) members.push(team.leader);
-  if (team.members) members.push(...team.members.filter((m: any) => m));
+  if (team.members) {
+    const validMembers = team.members.filter((m): m is Doc<"users"> => m !== null);
+    members.push(...validMembers);
+  }
   return members;
 }
 
@@ -68,11 +98,11 @@ export function TeamManagement() {
 
   const programs = useQuery(api.programs.getAllPrograms, {
     includeArchived: false,
-  });
+  }) as Doc<"programs">[] | undefined;
   const teamsForProgram = useQuery(
     api.teams.getTeamsByProgram,
     selectedProgram ? { programId: selectedProgram } : "skip"
-  );
+  ) as EnrichedTeam[] | undefined;
   const attendanceSummary = useQuery(
     api.attendance.getWeeklyAttendanceSummary,
     showAttendanceSummary && summaryTeamId
@@ -81,9 +111,9 @@ export function TeamManagement() {
           week: summaryWeek,
         }
       : "skip"
-  );
+  ) as AttendanceSummary | undefined;
   const createTeam = useMutation(api.teams.createTeam);
-  const allUsers = useQuery(api.users.getAllUsers, {});
+  const allUsers = useQuery(api.users.getAllUsers, {}) as Doc<"users">[] | undefined;
   const approvedRegistrations = useQuery(
     api.registrations.getApprovedRegistrations,
     {}

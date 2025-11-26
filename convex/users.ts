@@ -162,3 +162,29 @@ export const deleteSupervisor = mutation({
   },
 });
 
+
+// Get students by program
+export const getStudentsByProgram = query({
+  args: {
+    programId: v.id("programs"),
+  },
+  handler: async (ctx, args) => {
+    // Find approved registrations for this program
+    const registrations = await ctx.db
+      .query("registrations")
+      .withIndex("by_program", (q) => q.eq("programId", args.programId))
+      .filter((q) => q.eq(q.field("status"), "approved"))
+      .collect();
+
+    // Get the users for these registrations
+    const students = await Promise.all(
+      registrations.map(async (reg) => {
+        if (!reg.userId) return null;
+        const user = await ctx.db.get(reg.userId);
+        return user;
+      })
+    );
+
+    return students.filter((s) => s !== null);
+  },
+});

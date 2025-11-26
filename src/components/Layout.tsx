@@ -1,5 +1,7 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import {
   LayoutDashboard,
   Users,
@@ -9,13 +11,22 @@ import {
   CheckCircle,
   Calendar,
   FileCheck,
+  ChevronRight,
 } from "lucide-react";
 
 export function Layout() {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const programs = useQuery(api.programs.getAllPrograms, {
+    includeArchived: false,
+  });
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path.includes("?")) {
+      return location.pathname + location.search === path;
+    }
+    return location.pathname === path && location.search === "";
+  };
 
   // Debug: Log user role
   console.log("Layout - Current user:", user);
@@ -130,6 +141,41 @@ export function Layout() {
                 </Link>
               );
             })}
+
+            {/* Student Programs List */}
+            {effectiveRole !== "admin" && effectiveRole !== "supervisor" && (
+              <div className="pt-4">
+                <p className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                  Active Programs
+                </p>
+                <div className="space-y-1">
+                  {programs?.map((program) => {
+                    const programPath = `/dashboard?program=${program._id}`;
+                    return (
+                      <Link
+                        key={program._id}
+                        to={programPath}
+                        className={`flex items-center justify-between px-4 py-2 rounded-lg transition-colors text-sm group ${
+                          isActive(programPath)
+                            ? "bg-primary-50 text-primary-700 font-medium"
+                            : "text-gray-600 hover:bg-gray-50"
+                        }`}
+                      >
+                        <span className="truncate">{program.title}</span>
+                        {isActive(programPath) && (
+                          <ChevronRight className="w-4 h-4 text-primary-500" />
+                        )}
+                      </Link>
+                    );
+                  })}
+                  {programs?.length === 0 && (
+                    <p className="px-4 text-sm text-gray-400 italic">
+                      No active programs
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
           </nav>
         </aside>
 

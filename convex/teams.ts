@@ -218,3 +218,45 @@ export const removeMember = mutation({
   },
 });
 
+
+// Update team (Admin only)
+export const updateTeam = mutation({
+  args: {
+    id: v.id("teams"),
+    name: v.optional(v.string()),
+    leaderId: v.optional(v.id("users")),
+    memberIds: v.optional(v.array(v.id("users"))),
+    adminId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    // Check if user is admin
+    const admin = await ctx.db.get(args.adminId);
+    if (!checkIsAdmin(admin)) {
+      throw new Error("Only admins can update teams");
+    }
+
+    const updates: any = {};
+    if (args.name !== undefined) updates.name = args.name;
+    if (args.leaderId !== undefined) updates.leaderId = args.leaderId;
+    if (args.memberIds !== undefined) updates.memberIds = args.memberIds;
+
+    await ctx.db.patch(args.id, updates);
+  },
+});
+
+// Delete team (Admin only)
+export const deleteTeam = mutation({
+  args: {
+    id: v.id("teams"),
+    adminId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    // Check if user is admin
+    const admin = await ctx.db.get(args.adminId);
+    if (!checkIsAdmin(admin)) {
+      throw new Error("Only admins can delete teams");
+    }
+
+    await ctx.db.delete(args.id);
+  },
+});

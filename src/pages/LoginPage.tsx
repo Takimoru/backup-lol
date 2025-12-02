@@ -27,16 +27,16 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
-            <GraduationCap className="w-8 h-8 text-primary-600" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 p-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 sm:p-8">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-primary-100 rounded-full mb-4">
+            <GraduationCap className="w-7 h-7 sm:w-8 sm:h-8 text-primary-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
             Field Study System
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             Sign in with your university email to continue
           </p>
         </div>
@@ -48,8 +48,8 @@ export function LoginPage() {
                 Registration under review
               </p>
               <p className="mt-1">
-                {pendingEmail} has not been approved yet. Please wait for the admin to verify
-                your submission, then sign in again.
+                {pendingEmail} has not been approved yet. Please wait for the
+                admin to verify your submission, then sign in again.
               </p>
             </div>
             <button
@@ -58,8 +58,7 @@ export function LoginPage() {
                 sessionStorage.removeItem("pendingApprovalEmail");
                 setPendingEmail(null);
               }}
-              className="text-yellow-700 hover:text-yellow-900"
-            >
+              className="text-yellow-700 hover:text-yellow-900">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -67,8 +66,7 @@ export function LoginPage() {
 
         <button
           onClick={login}
-          className="w-full flex items-center justify-center space-x-3 bg-white border-2 border-gray-300 rounded-lg px-6 py-3 text-gray-700 font-medium hover:bg-gray-50 transition-colors"
-        >
+          className="w-full flex items-center justify-center space-x-3 bg-white border-2 border-gray-300 rounded-lg px-6 py-3 text-gray-700 font-medium hover:bg-gray-50 transition-colors">
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path
               fill="currentColor"
@@ -95,7 +93,9 @@ export function LoginPage() {
         </p>
         <p className="mt-2 text-center text-sm text-gray-500">
           Haven&apos;t submitted your documents yet?{" "}
-          <Link to="/register" className="text-primary-600 hover:underline font-medium">
+          <Link
+            to="/register"
+            className="text-primary-600 hover:underline font-medium">
             Complete registration first
           </Link>
         </p>
@@ -113,7 +113,7 @@ export function LoginPage() {
                   type="email"
                   value={mockEmail}
                   onChange={(e) => setMockEmail(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg"
+                  className="w-full px-3 py-2 border rounded-lg text-gray-600 mb-1"
                   placeholder="student@university.edu"
                 />
               </div>
@@ -125,19 +125,18 @@ export function LoginPage() {
                   type="text"
                   value={mockName}
                   onChange={(e) => setMockName(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg"
+                  className="w-full px-3 py-2 border rounded-lg text-gray-600 mb-1  "
                   placeholder="Mock Student"
                 />
               </div>
               <button
                 onClick={() => mockLogin?.(mockEmail, mockName)}
-                className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 text-sm"
-              >
+                className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 text-sm">
                 Sign in with mock account
               </button>
               <p className="text-xs text-gray-500">
-                Use this only in local development. The email must have an approved registration
-                before it can access the app.
+                Use this only in local development. The email must have an
+                approved registration before it can access the app.
               </p>
             </div>
           </div>
@@ -146,4 +145,3 @@ export function LoginPage() {
     </div>
   );
 }
-

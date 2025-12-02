@@ -13,6 +13,12 @@ import { TeamWorkspace } from "./pages/TeamWorkspace";
 import { SupervisorDashboard } from "./pages/SupervisorDashboard";
 import { NotFound } from "./pages/NotFound";
 import { RegistrationPage } from "./pages/RegistrationPage";
+// Student Pages
+import { ProjectsPage } from "./pages/student/ProjectsPage";
+import { TasksPage } from "./pages/student/TasksPage";
+import { CalendarPage } from "./pages/student/CalendarPage";
+import { FilesPage } from "./pages/student/FilesPage";
+import { TeamPage } from "./pages/student/TeamPage";
 // Admin Pages
 import { StudentApprovals } from "./pages/admin/StudentApprovals";
 import { TeamManagement } from "./pages/admin/TeamManagement";
@@ -52,6 +58,11 @@ function App() {
               >
                 <Route index element={<AdminRedirect />} />
                 <Route path="dashboard" element={<StudentDashboard />} />
+                <Route path="dashboard/projects" element={<ProjectsPage />} />
+                <Route path="dashboard/tasks" element={<TasksPage />} />
+                <Route path="dashboard/calendar" element={<CalendarPage />} />
+                <Route path="dashboard/files" element={<FilesPage />} />
+                <Route path="dashboard/team" element={<TeamPage />} />
                 <Route path="team/:teamId" element={<TeamWorkspace />} />
                 <Route path="supervisor" element={<SupervisorDashboard />} />
                 <Route path="admin/approvals" element={<StudentApprovals />} />

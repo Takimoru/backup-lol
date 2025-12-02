@@ -140,7 +140,7 @@ export function useTeamManagement() {
     setFormData({
       name: team.name || "",
       leaderId: team.leaderId,
-      memberIds: team.memberIds,
+      memberIds: team.memberIds, 
     });
     setIsCreating(true);
   };

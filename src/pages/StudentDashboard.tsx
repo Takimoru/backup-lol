@@ -1,13 +1,12 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Plus } from "lucide-react";
 import { ProgramDetails } from "../components/ProgramDetails";
 import { PendingRegistrationNotice } from "./student/components/PendingRegistrationNotice";
 import { CreateProgramModal } from "./student/components/CreateProgramModal";
-import { DashboardStats } from "./student/components/DashboardStats";
-import { MyTeams } from "./student/components/MyTeams";
 import { useStudentData } from "./student/hooks/useStudentData";
-import { Button } from "../components/ui/button";
+import { DashboardSidebar } from "./student/components/DashboardSidebar";
+import { DashboardHeader } from "./student/components/DashboardHeader";
+import { ProjectGrid } from "./student/components/ProjectGrid";
 
 export function StudentDashboard() {
   const [searchParams] = useSearchParams();
@@ -24,7 +23,6 @@ export function StudentDashboard() {
   } = useStudentData();
 
   const isPendingStudent = user?.role === "pending";
-  const isApprovedStudent = user?.role === "student";
 
   const selectedProgram = useMemo(() => {
     return programs?.find((p) => p._id === selectedProgramId);
@@ -53,44 +51,38 @@ export function StudentDashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Student Dashboard</h1>
-          <p className="text-gray-600 mt-2">Welcome back, {user?.name}!</p>
+    <div className="min-h-screen bg-background">
+      {/* Sidebar */}
+      <DashboardSidebar 
+        user={user} 
+        onCreateProject={() => setShowProgramForm(true)}
+      />
+
+      {/* Main Content Area */}
+      <div className="ml-64 min-h-screen">
+        <div className="p-8">
+          {isPendingStudent && <PendingRegistrationNotice />}
+
+          <DashboardHeader />
+
+          {user && (
+            <ProjectGrid 
+              teams={myTeams} 
+              userId={user._id}
+              todaysAttendance={todaysAttendance}
+            />
+          )}
         </div>
-        {isApprovedStudent && (
-          <Button
-            onClick={() => setShowProgramForm(true)}
-            className="inline-flex items-center space-x-2"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            <span>Create Work Program</span>
-          </Button>
-        )}
       </div>
 
-      {isPendingStudent && <PendingRegistrationNotice />}
-
+      {/* Create Program Modal */}
       {showProgramForm && user && (
         <CreateProgramModal 
           onClose={() => setShowProgramForm(false)} 
           userId={user._id}
         />
       )}
-
-      <DashboardStats 
-        programs={programs} 
-        userRegistrations={userRegistrations} 
-      />
-
-      {user && (
-        <MyTeams 
-          myTeams={myTeams} 
-          userId={user._id} 
-          todaysAttendance={todaysAttendance} 
-        />
-      )}
     </div>
   );
 }
+

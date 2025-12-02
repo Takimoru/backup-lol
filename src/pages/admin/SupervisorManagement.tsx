@@ -5,6 +5,9 @@ import { useState } from "react";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Id } from "../../../convex/_generated/dataModel";
+import { AdminHeader } from "./components/AdminHeader";
+import { AdminPageLayout } from "./components/AdminPageLayout";
+import { Button } from "../../components/ui/button";
 
 export function SupervisorManagement() {
   const { user } = useAuth();
@@ -124,164 +127,164 @@ export function SupervisorManagement() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Supervisor Management</h1>
-          <p className="text-gray-600 mt-2">
-            Create and manage supervisors for team assignments
-          </p>
-        </div>
-        <button
-          onClick={() => {
-            setShowSupervisorForm(true);
-            setEditingSupervisor(null);
-            setSupervisorForm({ name: "", email: "", nidn: "" });
-          }}
-          className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center space-x-2"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Supervisor</span>
-        </button>
-      </div>
+    <AdminPageLayout>
+      <AdminHeader
+        title="Supervisor Management"
+        description="Create and manage supervisors for team assignments"
+        action={
+          <Button
+            onClick={() => {
+              setShowSupervisorForm(true);
+              setEditingSupervisor(null);
+              setSupervisorForm({ name: "", email: "", nidn: "" });
+            }}
+            className="bg-[hsl(var(--accent-orange))] hover:bg-[hsl(var(--accent-orange))/0.9] text-white shadow-lg shadow-orange-900/20"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Supervisor
+          </Button>
+        }
+      />
 
-      {/* Supervisor Form */}
-      {showSupervisorForm && (
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            {editingSupervisor
-              ? "Edit Supervisor"
-              : "Create New Supervisor"}
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Name *
-              </label>
-              <input
-                type="text"
-                value={supervisorForm.name}
-                onChange={(e) =>
-                  setSupervisorForm({
-                    ...supervisorForm,
-                    name: e.target.value,
-                  })
-                }
-                className="w-full px-3 py-2 border rounded-lg"
-                placeholder="Supervisor name"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email * (for login)
-              </label>
-              <input
-                type="email"
-                value={supervisorForm.email}
-                onChange={(e) =>
-                  setSupervisorForm({
-                    ...supervisorForm,
-                    email: e.target.value,
-                  })
-                }
-                className="w-full px-3 py-2 border rounded-lg"
-                placeholder="supervisor@university.edu"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                NIDN *
-              </label>
-              <input
-                type="text"
-                value={supervisorForm.nidn}
-                onChange={(e) =>
-                  setSupervisorForm({
-                    ...supervisorForm,
-                    nidn: e.target.value,
-                  })
-                }
-                className="w-full px-3 py-2 border rounded-lg"
-                placeholder="NIDN number"
-              />
-            </div>
-          </div>
-          <div className="flex space-x-2 mt-4">
-            <button
-              onClick={
-                editingSupervisor
-                  ? handleUpdateSupervisor
-                  : handleCreateSupervisor
-              }
-              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-            >
+      <div className="space-y-6">
+        {/* Supervisor Form */}
+        {showSupervisorForm && (
+          <div className="bg-card rounded-lg shadow-lg border border-border p-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
               {editingSupervisor
-                ? "Update Supervisor"
-                : "Create Supervisor"}
-            </button>
-            <button
-              onClick={handleCancelSupervisorForm}
-              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-            >
-              Cancel
-            </button>
+                ? "Edit Supervisor"
+                : "Create New Supervisor"}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  Name *
+                </label>
+                <input
+                  type="text"
+                  value={supervisorForm.name}
+                  onChange={(e) =>
+                    setSupervisorForm({
+                      ...supervisorForm,
+                      name: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  placeholder="Supervisor name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  Email * (for login)
+                </label>
+                <input
+                  type="email"
+                  value={supervisorForm.email}
+                  onChange={(e) =>
+                    setSupervisorForm({
+                      ...supervisorForm,
+                      email: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  placeholder="supervisor@university.edu"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  NIDN *
+                </label>
+                <input
+                  type="text"
+                  value={supervisorForm.nidn}
+                  onChange={(e) =>
+                    setSupervisorForm({
+                      ...supervisorForm,
+                      nidn: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  placeholder="NIDN number"
+                />
+              </div>
+            </div>
+            <div className="flex space-x-2 mt-4">
+              <Button
+                onClick={
+                  editingSupervisor
+                    ? handleUpdateSupervisor
+                    : handleCreateSupervisor
+                }
+                className="bg-primary hover:bg-primary/90"
+              >
+                {editingSupervisor
+                  ? "Update Supervisor"
+                  : "Create Supervisor"}
+              </Button>
+              <Button
+                onClick={handleCancelSupervisorForm}
+                variant="outline"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Supervisors List */}
+        <div className="bg-card rounded-lg shadow-lg border border-border">
+          <div className="p-6 border-b border-border">
+            <h2 className="text-xl font-semibold text-foreground">Supervisors</h2>
+          </div>
+          <div className="p-6">
+            {supervisorOptions && supervisorOptions.length > 0 ? (
+              <div className="space-y-3">
+                {supervisorOptions.map((supervisor) => (
+                  <div
+                    key={supervisor._id}
+                    className="border border-border rounded-lg p-4 flex justify-between items-center hover:bg-accent/50 transition-colors"
+                  >
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-foreground">
+                        {supervisor.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {supervisor.email}
+                      </p>
+                      {supervisor.nidn && (
+                        <p className="text-sm text-muted-foreground">
+                          NIDN: {supervisor.nidn}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleEditSupervisor(supervisor)}
+                        className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded transition-colors"
+                        title="Edit supervisor"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteSupervisor(supervisor._id)}
+                        className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                        title="Delete supervisor"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-muted-foreground text-center py-8">
+                No supervisors created yet. Click "Add Supervisor" to create one.
+              </p>
+            )}
           </div>
         </div>
-      )}
-
-      {/* Supervisors List */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">Supervisors</h2>
-        </div>
-        <div className="p-6">
-          {supervisorOptions && supervisorOptions.length > 0 ? (
-            <div className="space-y-3">
-              {supervisorOptions.map((supervisor) => (
-                <div
-                  key={supervisor._id}
-                  className="border rounded-lg p-4 flex justify-between items-center hover:bg-gray-50"
-                >
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">
-                      {supervisor.name}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {supervisor.email}
-                    </p>
-                    {supervisor.nidn && (
-                      <p className="text-sm text-gray-500">
-                        NIDN: {supervisor.nidn}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleEditSupervisor(supervisor)}
-                      className="p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded"
-                      title="Edit supervisor"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteSupervisor(supervisor._id)}
-                      className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded"
-                      title="Delete supervisor"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500 text-center py-8">
-              No supervisors created yet. Click "Add Supervisor" to create one.
-            </p>
-          )}
-        </div>
       </div>
-    </div>
+    </AdminPageLayout>
   );
 }
 

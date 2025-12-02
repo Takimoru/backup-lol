@@ -1,5 +1,7 @@
 import { useStudentApprovals } from "./hooks/useStudentApprovals";
 import { RegistrationList } from "./components/student-approvals/RegistrationList";
+import { AdminHeader } from "./components/AdminHeader";
+import { AdminPageLayout } from "./components/AdminPageLayout";
 
 export function StudentApprovals() {
   const {
@@ -12,26 +14,23 @@ export function StudentApprovals() {
   } = useStudentApprovals();
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Student Approvals</h1>
-        <p className="text-gray-600 mt-2">
-          Review and approve student registrations
-        </p>
-      </div>
+    <AdminPageLayout>
+      <AdminHeader
+        title="Student Approvals"
+        description="Review and approve student registrations"
+      />
 
       {/* Tabs */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="border-b">
+      <div className="bg-card rounded-lg shadow-lg border border-border">
+        <div className="border-b border-border">
           <div className="flex">
             <button
               onClick={() => setActiveTab("pending")}
               className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
                 activeTab === "pending"
-                  ? "border-primary-600 text-primary-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
-              }`}
-            >
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}>
               Pending
               {pendingRegistrations && pendingRegistrations.length > 0 && (
                 <span className="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-yellow-600 rounded-full">
@@ -43,10 +42,9 @@ export function StudentApprovals() {
               onClick={() => setActiveTab("approved")}
               className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
                 activeTab === "approved"
-                  ? "border-primary-600 text-primary-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
-              }`}
-            >
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}>
               Approved
               {approvedRegistrations && approvedRegistrations.length > 0 && (
                 <span className="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-green-600 rounded-full">
@@ -62,10 +60,10 @@ export function StudentApprovals() {
           <div className="p-6">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">
+                <h2 className="text-xl font-semibold text-foreground">
                   Pending Student Registrations
                 </h2>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Review documents and grant access based on submission email.
                 </p>
               </div>
@@ -85,10 +83,10 @@ export function StudentApprovals() {
           <div className="p-6">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">
+                <h2 className="text-xl font-semibold text-foreground">
                   Approved Student Registrations
                 </h2>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   List of students who have been approved and granted access.
                 </p>
               </div>
@@ -101,7 +99,6 @@ export function StudentApprovals() {
           </div>
         )}
       </div>
-    </div>
+    </AdminPageLayout>
   );
 }
-

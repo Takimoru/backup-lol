@@ -93,14 +93,14 @@ export function ProgramDetails({ program, registration, team }: ProgramDetailsPr
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <div className="flex justify-between items-start">
-            <div>
-              <CardTitle className="text-2xl">{program.title}</CardTitle>
-              <CardDescription className="flex items-center space-x-2 mt-2">
-                <Calendar className="w-4 h-4" />
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start">
+            <div className="flex-1">
+              <CardTitle className="text-xl sm:text-2xl">{program.title}</CardTitle>
+              <CardDescription className="flex items-center space-x-2 mt-2 text-xs sm:text-sm">
+                <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span>
-                  {format(new Date(program.startDate), "MMMM d, yyyy")} -{" "}
-                  {format(new Date(program.endDate), "MMMM d, yyyy")}
+                  {format(new Date(program.startDate), "MMM d, yyyy")} -{" "}
+                  {format(new Date(program.endDate), "MMM d, yyyy")}
                 </span>
               </CardDescription>
             </div>
@@ -178,13 +178,14 @@ export function ProgramDetails({ program, registration, team }: ProgramDetailsPr
               
               <div className="pt-4 space-y-2">
                 <Label>Update Progress</Label>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Input 
                     type="number" 
                     min="0" 
                     max="100"
                     placeholder="0-100"
                     defaultValue={team.progress || 0}
+                    className="w-full"
                     onChange={(e) => {
                        const val = parseInt(e.target.value);
                        if (!isNaN(val) && val >= 0 && val <= 100) {
@@ -251,20 +252,20 @@ export function ProgramDetails({ program, registration, team }: ProgramDetailsPr
                     {team.documentation.map((doc, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                        className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors gap-2 sm:gap-0"
                       >
-                        <div className="flex items-center gap-3 overflow-hidden">
-                          <div className="p-2 rounded-md bg-primary/10 text-primary">
+                        <div className="flex items-center gap-3 overflow-hidden w-full sm:w-auto">
+                          <div className="p-2 rounded-md bg-primary/10 text-primary flex-shrink-0">
                             <FileText className="w-4 h-4" />
                           </div>
-                          <div className="truncate">
+                          <div className="truncate flex-1">
                             <p className="text-sm font-medium truncate">{doc.name}</p>
                             <p className="text-xs text-muted-foreground">
                               {format(new Date(doc.uploadedAt), "MMM d, yyyy")}
                             </p>
                           </div>
                         </div>
-                        <Button variant="ghost" size="icon" asChild>
+                        <Button variant="ghost" size="icon" asChild className="self-end sm:self-auto">
                           <a href={doc.url} target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="w-4 h-4" />
                           </a>

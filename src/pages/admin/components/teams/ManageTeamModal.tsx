@@ -1,6 +1,22 @@
-import { X } from "lucide-react";
 import { TeamForm } from "../../types/team";
-
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "../../../../components/ui/dialog";
+import { Input } from "../../../../components/ui/input";
+import { Button } from "../../../../components/ui/button";
+import { Label } from "../../../../components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../../components/ui/select";
+import { ScrollArea } from "../../../../components/ui/scroll-area";
 
 interface ManageTeamModalProps {
   formData: TeamForm;
@@ -19,113 +35,104 @@ export function ManageTeamModal({
   onSubmit,
   onClose,
 }: ManageTeamModalProps) {
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full mx-4">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">
-            {isEditing ? "Edit Team" : "Create New Team"}
-          </h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(e);
+  };
 
-        <form onSubmit={onSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Team Name
-            </label>
-            <input
-              type="text"
+  return (
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>{isEditing ? "Edit Team" : "Create New Team"}</DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-6 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Team Name</Label>
+            <Input
+              id="name"
               required
               value={formData.name}
               onChange={(e) => onChange({ ...formData, name: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 border p-2"
               placeholder="e.g., Alpha Squad"
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select Leader
-            </label>
-            <select
-              required
+          <div className="space-y-2">
+            <Label htmlFor="leader">Select Leader</Label>
+            <Select
               value={formData.leaderId}
-              onChange={(e) =>
-                onChange({ ...formData, leaderId: e.target.value })
+              onValueChange={(value) =>
+                onChange({ ...formData, leaderId: value as any })
               }
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 border p-2"
             >
-              <option value="">Select a leader</option>
-              {availableStudents?.map((student) => (
-                <option key={student._id} value={student._id}>
-                  {student.name} ({student.email})
-                </option>
-              ))}
-            </select>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a leader" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableStudents?.map((student) => (
+                  <SelectItem key={student._id} value={student._id}>
+                    {student.name} ({student.email})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select Members
-            </label>
-            <div className="max-h-60 overflow-y-auto border rounded-md p-4 space-y-2">
-              {availableStudents?.map((student) => (
-                <label
-                  key={student._id}
-                  className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    checked={formData.memberIds.includes(student._id)}
-                    onChange={(e) => {
-                      const newMembers = e.target.checked
-                        ? [...formData.memberIds, student._id]
-                        : formData.memberIds.filter(
-                            (id) => id !== student._id
-                          );
+          <div className="space-y-2">
+            <Label>Select Members</Label>
+            <ScrollArea className="h-[240px] border rounded-md p-4">
+              <div className="space-y-2">
+                {availableStudents?.map((student) => (
+                  <div
+                    key={student._id}
+                    className="flex items-center space-x-3 p-2 hover:bg-accent rounded-md cursor-pointer transition-colors"
+                    onClick={() => {
+                      const newMembers = formData.memberIds.includes(student._id)
+                        ? formData.memberIds.filter((id) => id !== student._id)
+                        : [...formData.memberIds, student._id];
                       onChange({ ...formData, memberIds: newMembers });
                     }}
-                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                  />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {student.name}
-                    </p>
-                    <p className="text-xs text-gray-500">{student.email}</p>
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.memberIds.includes(student._id)}
+                      readOnly
+                      className="h-4 w-4 rounded border-primary text-primary focus:ring-primary"
+                    />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium leading-none">
+                        {student.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {student.email}
+                      </p>
+                    </div>
                   </div>
-                </label>
-              ))}
-              {availableStudents?.length === 0 && (
-                <p className="text-sm text-gray-500 text-center py-4">
-                  No available students found
-                </p>
-              )}
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
+                ))}
+                {availableStudents?.length === 0 && (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    No available students found
+                  </p>
+                )}
+              </div>
+            </ScrollArea>
+            <p className="text-xs text-muted-foreground">
               Selected: {formData.memberIds.length} members
             </p>
           </div>
 
-          <div className="flex justify-end space-x-3 pt-4 border-t">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-            >
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
-            >
+            </Button>
+            <Button type="submit">
               {isEditing ? "Update Team" : "Create Team"}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

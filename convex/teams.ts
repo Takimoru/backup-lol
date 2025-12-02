@@ -226,6 +226,7 @@ export const updateTeam = mutation({
     name: v.optional(v.string()),
     leaderId: v.optional(v.id("users")),
     memberIds: v.optional(v.array(v.id("users"))),
+    supervisorId: v.optional(v.id("users")),
     adminId: v.id("users"),
   },
   handler: async (ctx, args) => {
@@ -239,6 +240,7 @@ export const updateTeam = mutation({
     if (args.name !== undefined) updates.name = args.name;
     if (args.leaderId !== undefined) updates.leaderId = args.leaderId;
     if (args.memberIds !== undefined) updates.memberIds = args.memberIds;
+    if (args.supervisorId !== undefined) updates.supervisorId = args.supervisorId;
 
     await ctx.db.patch(args.id, updates);
   },

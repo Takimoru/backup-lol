@@ -12,8 +12,8 @@ export interface EnrichedTeam {
   programId: Id<"programs">;
   leaderId: Id<"users">;
   memberIds: Id<"users">[];
-  leader?: TeamMember;
-  members?: TeamMember[];
+  leader?: TeamMember | null;
+  members?: (TeamMember | null)[];
   supervisorId?: Id<"users">;
 }
 
@@ -21,4 +21,5 @@ export interface TeamForm {
   name: string;
   leaderId: string;
   memberIds: string[];
+  supervisorId?: string;
 }

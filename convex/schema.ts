@@ -135,5 +135,58 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_status", ["status"])
     .index("by_email", ["email"]),
+
+  // Work Programs
+  work_programs: defineTable({
+    teamId: v.id("teams"),
+    title: v.string(),
+    description: v.string(),
+    startDate: v.string(), // ISO date string
+    endDate: v.string(), // ISO date string
+    assignedMembers: v.array(v.id("users")),
+    createdBy: v.id("users"),
+    createdAt: v.string(), // ISO datetime string
+  })
+    .index("by_team", ["teamId"]),
+
+  work_program_progress: defineTable({
+    workProgramId: v.id("work_programs"),
+    memberId: v.id("users"),
+    percentage: v.number(), // 0-100
+    notes: v.optional(v.string()),
+    attachments: v.optional(v.array(v.string())), // Array of URLs
+    updatedAt: v.string(), // ISO datetime string
+  })
+    .index("by_work_program", ["workProgramId"])
+    .index("by_member", ["memberId"])
+    .index("by_work_program_member", ["workProgramId", "memberId"]),
+
+  // Tasks (Enhanced)
+  tasks: defineTable({
+    teamId: v.id("teams"),
+    title: v.string(),
+    description: v.optional(v.string()),
+    assignedMembers: v.array(v.id("users")),
+    startTime: v.string(), // ISO datetime string
+    endTime: v.string(), // ISO datetime string
+    week: v.optional(v.string()), // For backward compatibility
+    createdBy: v.id("users"),
+    createdAt: v.string(), // ISO datetime string
+    workProgramId: v.optional(v.id("work_programs")), // Nullable
+    completed: v.boolean(), // Keep for backward compatibility or quick status
+  })
+    .index("by_team", ["teamId"])
+    .index("by_work_program", ["workProgramId"]),
+
+  task_updates: defineTable({
+    taskId: v.id("tasks"),
+    memberId: v.id("users"),
+    notes: v.optional(v.string()),
+    attachments: v.optional(v.array(v.string())), // Array of URLs
+    updatedAt: v.string(), // ISO datetime string
+    progress: v.optional(v.number()), // If linked to WP
+  })
+    .index("by_task", ["taskId"])
+    .index("by_member", ["memberId"]),
 });
 

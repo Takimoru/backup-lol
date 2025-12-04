@@ -19,11 +19,11 @@ export function TeamWorkspace() {
   const { user } = useAuth();
   const [selectedWeek, setSelectedWeek] = useState(getCurrentWeek());
   const team = useQuery(
-    api.teams.getTeamById,
-    teamId ? { teamId: teamId as any } : "skip"
+    api.teams.getTeam,
+    teamId ? { id: teamId as any } : "skip"
   );
   const tasks = useQuery(
-    api.tasks.getTasksByTeamWeek,
+    api.tasks.getByTeam,
     teamId
       ? {
           teamId: teamId as any,
@@ -41,9 +41,9 @@ export function TeamWorkspace() {
       : "skip"
   );
 
-  const createTask = useMutation(api.tasks.createTask);
+  const createTask = useMutation(api.tasks.create);
   const checkIn = useMutation(api.attendance.checkIn);
-  const completeTask = useMutation(api.tasks.completeTask);
+  const updateTask = useMutation(api.tasks.update);
   const weeklySummary = useQuery(
     api.attendance.getWeeklyAttendanceSummary,
     teamId
@@ -106,11 +106,15 @@ export function TeamWorkspace() {
     }
 
     try {
+      // Calculate start/end time based on selected week or current time
+      const now = new Date();
       await createTask({
         teamId: teamId as any,
         title: newTaskTitle.trim(),
-        assignedTo: user._id,
-        week: selectedWeek,
+        assignedMembers: [user._id],
+        startTime: now.toISOString(),
+        endTime: now.toISOString(), // Default to same day for quick task
+        createdBy: user._id,
       });
       setNewTaskTitle("");
       toast.success("Task created successfully!");
@@ -249,7 +253,7 @@ export function TeamWorkspace() {
                   <button
                     onClick={() => {
                       if (!task.completed) {
-                        completeTask({ taskId: task._id });
+                        updateTask({ id: task._id, completed: true });
                       }
                     }}
                     className="flex-shrink-0"
@@ -277,7 +281,7 @@ export function TeamWorkspace() {
                     )}
                   </div>
                   <span className="text-sm text-gray-500">
-                    {task.assignedUser?.name}
+                    {task.assignedMembers?.length ? `${task.assignedMembers.length} assigned` : "Unassigned"}
                   </span>
                 </div>
               ))}

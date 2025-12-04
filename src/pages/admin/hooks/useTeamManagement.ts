@@ -16,6 +16,7 @@ export function useTeamManagement() {
     name: "",
     leaderId: "",
     memberIds: [],
+    supervisorId: undefined,
   });
 
   const programs = useQuery(api.programs.getAllPrograms, {
@@ -30,6 +31,8 @@ export function useTeamManagement() {
   const students = useQuery(api.users.getStudentsByProgram, 
     selectedProgram ? { programId: selectedProgram } : "skip"
   );
+
+  const supervisors = useQuery(api.users.getAllUsers, { role: "supervisor" });
 
   const createTeamMutation = useMutation(api.teams.createTeam);
   const updateTeamMutation = useMutation(api.teams.updateTeam);
@@ -54,7 +57,7 @@ export function useTeamManagement() {
   }, [students, teams, editingTeam]);
 
   const resetForm = () => {
-    setFormData({ name: "", leaderId: "", memberIds: [] });
+    setFormData({ name: "", leaderId: "", memberIds: [], supervisorId: undefined });
     setIsCreating(false);
     setEditingTeam(null);
   };
@@ -78,6 +81,7 @@ export function useTeamManagement() {
         name: formData.name,
         leaderId: formData.leaderId as Id<"users">,
         memberIds: formData.memberIds as Id<"users">[],
+        supervisorId: formData.supervisorId as Id<"users"> | undefined,
         adminId: user._id,
       });
       toast.success("Team created successfully");
@@ -101,6 +105,7 @@ export function useTeamManagement() {
         name: formData.name,
         leaderId: formData.leaderId as Id<"users">,
         memberIds: formData.memberIds as Id<"users">[],
+        supervisorId: formData.supervisorId as Id<"users"> | undefined,
         adminId: user._id,
       });
       toast.success("Team updated successfully");
@@ -140,7 +145,8 @@ export function useTeamManagement() {
     setFormData({
       name: team.name || "",
       leaderId: team.leaderId,
-      memberIds: team.memberIds, 
+      memberIds: team.memberIds,
+      supervisorId: team.supervisorId,
     });
     setIsCreating(true);
   };
@@ -158,6 +164,7 @@ export function useTeamManagement() {
     programs,
     teams,
     availableStudents,
+    supervisors,
     handleCreateTeam,
     handleUpdateTeam,
     handleDeleteTeam,

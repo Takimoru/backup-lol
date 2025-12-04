@@ -1,29 +1,21 @@
 import { useState } from "react";
 import { useStudentData } from "./hooks/useStudentData";
 import { DashboardSidebar } from "./components/DashboardSidebar";
-import { CheckCircle2, Circle, CheckSquare, Loader2 } from "lucide-react";
+import { CheckCircle2, Circle, CheckSquare, Loader2, FileText } from "lucide-react";
 import { Badge } from "../../components/ui/badge";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { CreateTaskModal } from "./components/CreateTaskModal";
-import { toast } from "react-hot-toast";
+import { TaskDetailModal } from "./components/TaskDetailModal";
+import { Id } from "../../../convex/_generated/dataModel";
 
 export function TasksPage() {
   const { user } = useStudentData();
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedTaskId, setSelectedTaskId] = useState<Id<"tasks"> | null>(null);
 
-  const myTasks = user ? useQuery(api.tasks.getTasksByUser, { userId: user._id }) : [];
-  const completeTask = useMutation(api.tasks.completeTask);
-
-  const handleCompleteTask = async (taskId: any) => {
-    try {
-      await completeTask({ taskId });
-      toast.success("Task completed!");
-    } catch (error) {
-      toast.error("Failed to complete task");
-    }
-  };
+  const myTasks = user ? useQuery(api.tasks.getByUser, { userId: user._id }) : [];
 
   const getStatusIcon = (completed: boolean) => {
     if (completed) return <CheckCircle2 className="w-5 h-5 text-green-500" />;
@@ -48,14 +40,21 @@ export function TasksPage() {
     <div className="min-h-screen bg-background">
       <DashboardSidebar 
         user={user} 
-        onCreateProject={() => setIsCreateModalOpen(true)}
       />
 
       <div className="ml-64 min-h-screen">
         <div className="p-8">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground tracking-tight">Tasks</h1>
-            <p className="text-muted-foreground mt-1">Manage your tasks across all work programs</p>
+          <div className="flex justify-between items-start mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground tracking-tight">Tasks</h1>
+              <p className="text-muted-foreground mt-1">Manage your tasks across all work programs</p>
+            </div>
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Create Task
+            </button>
           </div>
 
           {/* Filter Tabs */}
@@ -85,26 +84,34 @@ export function TasksPage() {
               <div
                 key={task._id}
                 className="bg-card border border-border rounded-lg p-4 hover:border-primary/50 transition-all cursor-pointer group"
-                onClick={() => !task.completed && handleCompleteTask(task._id)}
+                onClick={() => setSelectedTaskId(task._id)}
               >
                 <div className="flex items-start gap-4">
                   <div className="mt-0.5">
-                    {getStatusIcon(task.completed)}
+                    {getStatusIcon(!!task.completed)}
                   </div>
                   <div className="flex-1">
-                    <h3 className={`text-base font-semibold transition-colors ${task.completed ? 'text-muted-foreground line-through' : 'text-foreground group-hover:text-primary'}`}>
-                      {task.title}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className={`text-base font-semibold transition-colors ${task.completed ? 'text-muted-foreground line-through' : 'text-foreground group-hover:text-primary'}`}>
+                        {task.title}
+                      </h3>
+                      {task.workProgram && (
+                        <Badge variant="secondary" className="text-xs font-normal flex items-center gap-1">
+                          <FileText className="w-3 h-3" />
+                          {task.workProgram.title}
+                        </Badge>
+                      )}
+                    </div>
                     {task.description && (
                       <p className="text-sm text-muted-foreground mt-1 line-clamp-1">{task.description}</p>
                     )}
                     <div className="flex items-center gap-3 mt-2">
-                      <span className="text-xs text-muted-foreground">Week: {task.week}</span>
+                      <span className="text-xs text-muted-foreground">Due: {new Date(task.endTime).toLocaleDateString()}</span>
                       <span className="text-xs text-muted-foreground">Created: {new Date(task.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className={getStatusBadge(task.completed)}>
+                    <Badge variant="outline" className={getStatusBadge(!!task.completed)}>
                       {task.completed ? "Done" : "To Do"}
                     </Badge>
                   </div>
@@ -126,6 +133,11 @@ export function TasksPage() {
       <CreateTaskModal 
         isOpen={isCreateModalOpen} 
         onClose={() => setIsCreateModalOpen(false)} 
+      />
+      
+      <TaskDetailModal
+        taskId={selectedTaskId}
+        onClose={() => setSelectedTaskId(null)}
       />
     </div>
   );

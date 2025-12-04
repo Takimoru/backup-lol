@@ -22,6 +22,7 @@ interface ManageTeamModalProps {
   formData: TeamForm;
   isEditing: boolean;
   availableStudents: any[];
+  availableSupervisors?: any[];
   onChange: (data: TeamForm) => void;
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
@@ -31,6 +32,7 @@ export function ManageTeamModal({
   formData,
   isEditing,
   availableStudents,
+  availableSupervisors,
   onChange,
   onSubmit,
   onClose,
@@ -74,6 +76,31 @@ export function ManageTeamModal({
                 {availableStudents?.map((student) => (
                   <SelectItem key={student._id} value={student._id}>
                     {student.name} ({student.email})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="supervisor">Select Supervisor (Optional)</Label>
+            <Select
+              value={formData.supervisorId || "none"}
+              onValueChange={(value) =>
+                onChange({
+                  ...formData,
+                  supervisorId: value === "none" ? undefined : (value as any),
+                })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a supervisor" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No Supervisor</SelectItem>
+                {availableSupervisors?.map((supervisor) => (
+                  <SelectItem key={supervisor._id} value={supervisor._id}>
+                    {supervisor.name} ({supervisor.email})
                   </SelectItem>
                 ))}
               </SelectContent>

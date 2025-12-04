@@ -18,6 +18,8 @@ import type * as reports from "../reports.js";
 import type * as tasks from "../tasks.js";
 import type * as teams from "../teams.js";
 import type * as users from "../users.js";
+import type * as weeklyReports from "../weeklyReports.js";
+import type * as workPrograms from "../workPrograms.js";
 
 import type {
   ApiFromModules,
@@ -36,6 +38,8 @@ declare const fullApi: ApiFromModules<{
   tasks: typeof tasks;
   teams: typeof teams;
   users: typeof users;
+  weeklyReports: typeof weeklyReports;
+  workPrograms: typeof workPrograms;
 }>;
 
 /**

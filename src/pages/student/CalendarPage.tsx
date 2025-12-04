@@ -71,7 +71,6 @@ export function CalendarPage() {
     <div className="min-h-screen bg-background">
       <DashboardSidebar 
         user={user} 
-        onCreateProject={() => setIsCreateModalOpen(true)}
       />
 
       <div className="ml-64 min-h-screen">

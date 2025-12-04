@@ -55,7 +55,6 @@ export function StudentDashboard() {
       {/* Sidebar */}
       <DashboardSidebar 
         user={user} 
-        onCreateProject={() => setShowProgramForm(true)}
       />
 
       {/* Main Content Area */}

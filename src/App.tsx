@@ -10,7 +10,6 @@ import { Layout } from "./components/Layout";
 import { LoginPage } from "./pages/LoginPage";
 import { StudentDashboard } from "./pages/StudentDashboard";
 import { TeamWorkspace } from "./pages/TeamWorkspace";
-import { SupervisorDashboard } from "./pages/SupervisorDashboard";
 import { NotFound } from "./pages/NotFound";
 import { RegistrationPage } from "./pages/RegistrationPage";
 // Student Pages
@@ -19,6 +18,9 @@ import { TasksPage } from "./pages/student/TasksPage";
 import { CalendarPage } from "./pages/student/CalendarPage";
 import { FilesPage } from "./pages/student/FilesPage";
 import { TeamPage } from "./pages/student/TeamPage";
+import { WorkProgramsPage } from "./pages/student/WorkProgramsPage";
+import { WorkProgramForm } from "./pages/student/components/WorkProgramForm";
+import { WorkProgramDetail } from "./pages/student/components/WorkProgramDetail";
 // Admin Pages
 import { StudentApprovals } from "./pages/admin/StudentApprovals";
 import { TeamManagement } from "./pages/admin/TeamManagement";
@@ -26,6 +28,11 @@ import { SupervisorManagement } from "./pages/admin/SupervisorManagement";
 import { AttendanceReviews } from "./pages/admin/AttendanceReviews";
 import { FinalReports } from "./pages/admin/FinalReports";
 import { AdminRedirect } from "./components/AdminRedirect";
+// Supervisor Pages
+import { SupervisorDashboard as NewSupervisorDashboard } from "./pages/supervisor/SupervisorDashboard";
+import { SupervisorTeamList } from "./pages/supervisor/SupervisorTeamList";
+import { SupervisorTeamDetails } from "./pages/supervisor/SupervisorTeamDetails";
+import { WeeklySummaryReview } from "./pages/supervisor/WeeklySummaryReview";
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL || "";
 
@@ -48,6 +55,14 @@ function App() {
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegistrationPage />} />
+              
+              {/* Supervisor Routes - Separate from Layout */}
+              <Route path="/supervisor" element={<ProtectedRoute><NewSupervisorDashboard /></ProtectedRoute>} />
+              <Route path="/supervisor/teams" element={<ProtectedRoute><SupervisorTeamList /></ProtectedRoute>} />
+              <Route path="/supervisor/teams/:teamId" element={<ProtectedRoute><SupervisorTeamDetails /></ProtectedRoute>} />
+              <Route path="/supervisor/review/:teamId/:week" element={<ProtectedRoute><WeeklySummaryReview /></ProtectedRoute>} />
+              
+              {/* Student and Admin Routes - Use Layout */}
               <Route
                 path="/"
                 element={
@@ -63,8 +78,13 @@ function App() {
                 <Route path="dashboard/calendar" element={<CalendarPage />} />
                 <Route path="dashboard/files" element={<FilesPage />} />
                 <Route path="dashboard/team" element={<TeamPage />} />
+                <Route path="dashboard/work-programs" element={<WorkProgramsPage />} />
                 <Route path="team/:teamId" element={<TeamWorkspace />} />
-                <Route path="supervisor" element={<SupervisorDashboard />} />
+                {/* Work Program Routes */}
+                <Route path="team/:teamId/programs/new" element={<WorkProgramForm />} />
+                <Route path="team/:teamId/programs/:programId" element={<WorkProgramDetail />} />
+                <Route path="team/:teamId/programs/:programId/edit" element={<WorkProgramForm />} />
+                {/* Admin Routes */}
                 <Route path="admin/approvals" element={<StudentApprovals />} />
                 <Route path="admin/teams" element={<TeamManagement />} />
                 <Route path="admin/supervisors" element={<SupervisorManagement />} />
@@ -82,4 +102,3 @@ function App() {
 }
 
 export default App;
-

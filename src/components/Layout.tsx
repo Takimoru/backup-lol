@@ -95,7 +95,10 @@ export function Layout() {
         ]
       : effectiveRole === "supervisor"
       ? [{ path: "/supervisor", label: "Supervisor", icon: FileText }]
-      : [{ path: "/dashboard", label: "Dashboard", icon: LayoutDashboard }];
+      : [
+          { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+          { path: "/dashboard/work-programs", label: "Work Programs", icon: FileText },
+        ];
 
   // Navigation content component (reused in both desktop sidebar and mobile drawer)
   const NavigationContent = () => (

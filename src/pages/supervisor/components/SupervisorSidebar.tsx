@@ -1,54 +1,41 @@
 import { NavLink } from "react-router-dom";
 import { 
   LayoutDashboard, 
-  FolderKanban, 
-  CheckSquare, 
-  Calendar, 
-  Files, 
   Users, 
-  MoreHorizontal
+  FileText,
+  CheckSquare,
+  LogOut
 } from "lucide-react";
+import { Button } from "../../../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar";
 import { Separator } from "../../../components/ui/separator";
+import { useAuth } from "../../../contexts/AuthContext";
 
-interface DashboardSidebarProps {
-  user: {
-    _id: any;
-    name: string;
-    email: string;
-    role: string;
-    picture?: string;
-  } | undefined | null;
-}
+export function SupervisorSidebar() {
+  const { user, logout } = useAuth();
 
-export function DashboardSidebar({ user }: DashboardSidebarProps) {
   const navItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-    { icon: FolderKanban, label: "Work Programs", path: "/dashboard/projects" },
-    { icon: CheckSquare, label: "Tasks", path: "/dashboard/tasks" },
-    { icon: Calendar, label: "Calendar", path: "/dashboard/calendar" },
-    { icon: Files, label: "Files", path: "/dashboard/files" },
-    { icon: Users, label: "Team", path: "/dashboard/team" },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/supervisor" },
+    { icon: Users, label: "My Teams", path: "/supervisor/teams" },
+    { icon: CheckSquare, label: "Pending Reviews", path: "/supervisor/pending" },
+    { icon: FileText, label: "All Reports", path: "/supervisor/reports" },
   ];
-
-
 
   return (
     <div className="w-64 h-screen bg-[hsl(var(--sidebar-background))] border-r border-border flex flex-col fixed left-0 top-0 z-50">
       {/* Workspace Branding */}
       <div className="p-6 flex items-center gap-3">
-        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-          <span className="text-primary-foreground font-bold">W</span>
+        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+          <span className="text-white font-bold">S</span>
         </div>
         <div>
-          <h2 className="font-semibold text-foreground">Simonpro</h2>
+          <h2 className="font-semibold text-foreground">Supervisor</h2>
+          <p className="text-xs text-muted-foreground">Team Review</p>
         </div>
       </div>
 
-
-
       {/* Navigation */}
-      <div className="px-3 space-y-1">
+      <div className="px-3 space-y-1 mt-4">
         {navItems.map((item) => (
           <NavLink
             key={item.label}
@@ -56,7 +43,7 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
             className={({ isActive }) =>
               `w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 isActive
-                  ? "bg-accent text-accent-foreground"
+                  ? "bg-blue-100 text-blue-900"
                   : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
               }`
             }
@@ -67,9 +54,10 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
         ))}
       </div>
 
-      <div className="flex flex-col h-screen">
-        <Separator className="bg-border/10" />
+      <div className="px-6 py-4 mt-auto">
+        <Separator className="bg-border/50" />
       </div>
+
       {/* User Card */}
       <div className="p-4 border-t border-border bg-card/50">
         <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer">
@@ -77,11 +65,13 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
             <AvatarImage src={user?.picture} />
             <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
           </Avatar>
-          <div className="flex-1 min-w-0 flex flex-col">
+          <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-foreground truncate">{user?.name}</p>
             <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
-          <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
+          <Button variant="ghost" size="icon" onClick={logout} className="h-8 w-8 text-muted-foreground hover:text-destructive">
+            <LogOut className="w-4 h-4" />
+          </Button>
         </div>
       </div>
     </div>

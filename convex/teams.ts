@@ -307,3 +307,10 @@ export const addDocumentation = mutation({
     });
   },
 });
+// Get a single team by ID
+export const getTeam = query({
+  args: { id: v.id("teams") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.id);
+  },
+});

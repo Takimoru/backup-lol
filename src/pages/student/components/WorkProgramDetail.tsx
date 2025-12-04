@@ -7,7 +7,8 @@ import { AdminHeader } from "../../admin/components/AdminHeader";
 import { Button } from "../../../components/ui/button";
 import { Progress } from "../../../components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
-import { ArrowLeft, Edit, Calendar, CheckSquare, FileText } from "lucide-react";
+import { Badge } from "../../../components/ui/badge";
+import { ArrowLeft, Edit, Calendar, CheckSquare, FileText, Circle, CheckCircle2 } from "lucide-react";
 import { format } from "date-fns";
 import { useAuth } from "../../../contexts/AuthContext";
 
@@ -135,22 +136,82 @@ export function WorkProgramDetail() {
             </CardContent>
           </Card>
 
-          {/* Linked Tasks (Placeholder for now, could fetch tasks linked to this WP) */}
+          {/* Linked Tasks */}
           <Card>
             <CardHeader>
               <CardTitle>Linked Tasks</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-center h-32 text-muted-foreground border border-dashed rounded-lg">
-                <div className="text-center">
-                  <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p>Tasks linked to this program will appear here</p>
-                </div>
-              </div>
+              <LinkedTasksList workProgramId={program._id} />
             </CardContent>
           </Card>
         </div>
       </div>
     </AdminPageLayout>
+  );
+}
+
+// Component to display linked tasks
+function LinkedTasksList({ workProgramId }: { workProgramId: any }) {
+  const tasks = useQuery(api.tasks.getByTeam, { teamId: workProgramId as any });
+  
+  // Filter tasks for this work program
+  const linkedTasks = tasks?.filter(t => t.workProgramId === workProgramId) || [];
+
+  if (linkedTasks.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-32 text-muted-foreground border border-dashed rounded-lg">
+        <div className="text-center">
+          <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
+          <p>No tasks linked to this program yet</p>
+        </div>
+      </div>
+    );
+  }
+
+  const completedCount = linkedTasks.filter(t => t.completed).length;
+  const totalCount = linkedTasks.length;
+  const completionPercentage = Math.round((completedCount / totalCount) * 100);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-muted-foreground">
+          {completedCount} of {totalCount} tasks completed
+        </span>
+        <span className="font-medium">{completionPercentage}%</span>
+      </div>
+      <Progress value={completionPercentage} className="h-2" />
+      
+      <div className="space-y-2 mt-4">
+        {linkedTasks.map(task => (
+          <div
+            key={task._id}
+            className="flex items-center gap-3 p-3 rounded-lg border hover:bg-accent/50 transition-colors"
+          >
+            {task.completed ? (
+              <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
+            ) : (
+              <Circle className="w-5 h-5 text-muted-foreground shrink-0" />
+            )}
+            <div className="flex-1 min-w-0">
+              <p className={`font-medium truncate ${task.completed ? 'line-through text-muted-foreground' : ''}`}>
+                {task.title}
+              </p>
+              {task.completedAt && (
+                <p className="text-xs text-muted-foreground">
+                  Completed {format(new Date(task.completedAt), "MMM d, yyyy")}
+                </p>
+              )}
+            </div>
+            {task.completionFiles && task.completionFiles.length > 0 && (
+              <Badge variant="secondary" className="text-xs">
+                {task.completionFiles.length} file{task.completionFiles.length > 1 ? 's' : ''}
+              </Badge>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

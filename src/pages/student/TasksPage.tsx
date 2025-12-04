@@ -16,6 +16,21 @@ export function TasksPage() {
   const [selectedTaskId, setSelectedTaskId] = useState<Id<"tasks"> | null>(null);
 
   const myTasks = user ? useQuery(api.tasks.getByUser, { userId: user._id }) : [];
+  
+  // Debug queries
+  const allTasks = useQuery(api.debugTasks.debugAllTasks, {});
+  const userTeams = useQuery(api.debugTasks.debugUserTeams, user ? { userId: user._id } : "skip");
+
+  // Debug logging
+  console.log("TasksPage Debug:", {
+    userId: user?._id,
+    myTasks,
+    myTasksCount: myTasks?.length,
+    allTasks,
+    allTasksCount: allTasks?.length,
+    userTeams,
+    userTeamsCount: userTeams?.length,
+  });
 
   const getStatusIcon = (completed: boolean) => {
     if (completed) return <CheckCircle2 className="w-5 h-5 text-green-500" />;
@@ -35,6 +50,18 @@ export function TasksPage() {
   }) || [];
 
   if (!user) return <div className="flex items-center justify-center h-screen"><Loader2 className="animate-spin" /></div>;
+  
+  // Show loading state while tasks are being fetched
+  if (myTasks === undefined) {
+    return (
+      <div className="min-h-screen bg-background">
+        <DashboardSidebar user={user} />
+        <div className="ml-64 min-h-screen flex items-center justify-center">
+          <Loader2 className="animate-spin w-8 h-8" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

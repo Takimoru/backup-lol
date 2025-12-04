@@ -10,6 +10,7 @@
 
 import type * as attendance from "../attendance.js";
 import type * as auth from "../auth.js";
+import type * as debugTasks from "../debugTasks.js";
 import type * as debug_users from "../debug_users.js";
 import type * as fix_missing_users from "../fix_missing_users.js";
 import type * as programs from "../programs.js";
@@ -30,6 +31,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   attendance: typeof attendance;
   auth: typeof auth;
+  debugTasks: typeof debugTasks;
   debug_users: typeof debug_users;
   fix_missing_users: typeof fix_missing_users;
   programs: typeof programs;

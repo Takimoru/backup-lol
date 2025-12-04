@@ -36,6 +36,7 @@ export const create = mutation({
 export const update = mutation({
   args: {
     id: v.id("tasks"),
+    userId: v.id("users"), // User performing the update
     title: v.optional(v.string()),
     description: v.optional(v.string()),
     assignedMembers: v.optional(v.array(v.id("users"))),
@@ -43,12 +44,81 @@ export const update = mutation({
     endTime: v.optional(v.string()),
     workProgramId: v.optional(v.id("work_programs")),
     completed: v.optional(v.boolean()),
+    completionFiles: v.optional(v.array(v.string())), // Required when marking as complete
   },
   handler: async (ctx, args) => {
-    const { id, ...updates } = args;
-    await ctx.db.patch(id, updates);
+    const { id, userId, ...updates } = args;
+    
+    const task = await ctx.db.get(id);
+    if (!task) {
+      throw new Error("Task not found");
+    }
+
+    // If marking as complete, require files and track completion metadata
+    if (updates.completed === true && !task.completed) {
+      if (!updates.completionFiles || updates.completionFiles.length === 0) {
+        throw new Error("At least one file must be uploaded to complete the task");
+      }
+      
+      // Add completion metadata
+      await ctx.db.patch(id, {
+        ...updates,
+        completedAt: new Date().toISOString(),
+        completedBy: userId,
+      });
+
+      // Update work program progress if task is linked to one
+      if (task.workProgramId) {
+        await updateWorkProgramProgress(ctx, task.workProgramId);
+      }
+    } else {
+      await ctx.db.patch(id, updates);
+    }
   },
 });
+
+// Helper function to calculate and update work program progress
+async function updateWorkProgramProgress(ctx: any, workProgramId: any) {
+  // Get all tasks for this work program
+  const tasks = await ctx.db
+    .query("tasks")
+    .withIndex("by_work_program", (q: any) => q.eq("workProgramId", workProgramId))
+    .collect();
+
+  if (tasks.length === 0) return;
+
+  // Calculate completion percentage
+  const completedTasks = tasks.filter((t: any) => t.completed);
+  const percentage = Math.round((completedTasks.length / tasks.length) * 100);
+
+  // Get work program to find assigned members
+  const workProgram = await ctx.db.get(workProgramId);
+  if (!workProgram) return;
+
+  // Update progress for each assigned member
+  for (const memberId of workProgram.assignedMembers) {
+    const existingProgress = await ctx.db
+      .query("work_program_progress")
+      .withIndex("by_work_program_member", (q: any) =>
+        q.eq("workProgramId", workProgramId).eq("memberId", memberId)
+      )
+      .first();
+
+    if (existingProgress) {
+      await ctx.db.patch(existingProgress._id, {
+        percentage,
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      await ctx.db.insert("work_program_progress", {
+        workProgramId,
+        memberId,
+        percentage,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+  }
+}
 
 // Delete a task
 export const remove = mutation({

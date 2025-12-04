@@ -48,11 +48,16 @@ export function CreateTaskModal({ isOpen, onClose }: CreateTaskModalProps) {
 
     setIsLoading(true);
     try {
+      // Ensure at least the creator is assigned if no one else is selected
+      const assignedMembers = formData.assignedMembers.length > 0 
+        ? formData.assignedMembers as Id<"users">[]
+        : [user!._id];
+      
       await createTask({
         teamId: formData.teamId as Id<"teams">,
         title: formData.title,
         description: formData.description,
-        assignedMembers: formData.assignedMembers as Id<"users">[],
+        assignedMembers,
         startTime: formData.startTime || new Date().toISOString(),
         endTime: formData.endTime || new Date().toISOString(),
         createdBy: user!._id,

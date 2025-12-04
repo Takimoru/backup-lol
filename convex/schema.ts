@@ -174,6 +174,9 @@ export default defineSchema({
     createdAt: v.string(), // ISO datetime string
     workProgramId: v.optional(v.id("work_programs")), // Nullable
     completed: v.boolean(), // Keep for backward compatibility or quick status
+    completionFiles: v.optional(v.array(v.string())), // URLs of files uploaded when completing task
+    completedAt: v.optional(v.string()), // ISO datetime string when task was completed
+    completedBy: v.optional(v.id("users")), // User who marked task as complete
   })
     .index("by_team", ["teamId"])
     .index("by_work_program", ["workProgramId"]),

@@ -1,13 +1,16 @@
 import { Calendar, Users, CheckCircle } from "lucide-react";
 import { format } from "date-fns";
-import { Doc } from "../../../../convex/_generated/dataModel";
+import { Doc } from "../../../../../convex/_generated/dataModel";
 
 interface DashboardStatsProps {
   programs: Doc<"programs">[] | undefined;
   userRegistrations: Doc<"registrations">[] | undefined | null;
 }
 
-export function DashboardStats({ programs, userRegistrations }: DashboardStatsProps) {
+export function DashboardStats({
+  programs,
+  userRegistrations,
+}: DashboardStatsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div className="bg-white rounded-lg shadow p-6">
@@ -39,7 +42,8 @@ export function DashboardStats({ programs, userRegistrations }: DashboardStatsPr
           <div>
             <p className="text-sm text-gray-600">My Registrations</p>
             <p className="text-2xl font-bold text-gray-900 mt-1">
-              {userRegistrations?.filter((r) => r.status === "approved").length || 0}
+              {userRegistrations?.filter((r) => r.status === "approved")
+                .length || 0}
             </p>
           </div>
           <CheckCircle className="w-8 h-8 text-primary-500" />

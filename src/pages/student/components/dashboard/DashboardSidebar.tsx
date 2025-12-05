@@ -6,13 +6,14 @@ import {
   Calendar, 
   Files, 
   Users, 
-  MoreHorizontal,
-  Menu
+  Menu,
+  LogOut
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "../../../../components/ui/sheet";
 import { Button } from "../../../../components/ui/button";
 import { useState } from "react";
+import { useAuth } from "../../../../contexts/AuthContext";
 
 interface DashboardSidebarProps {
   user: {
@@ -26,6 +27,7 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({ user }: DashboardSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
   
   const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
@@ -71,7 +73,7 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
 
       {/* User Card */}
       <div className="p-4 border-t border-border bg-card/50 mt-auto">
-        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer">
+        <div className="flex items-center gap-3 p-2 rounded-lg mb-2">
           <Avatar className="w-8 h-8 border border-border">
             <AvatarImage src={user?.picture} />
             <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
@@ -80,8 +82,18 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
             <p className="text-sm font-medium text-foreground truncate">{user?.name}</p>
             <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
-          <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
         </div>
+        <Button 
+          variant="outline" 
+          className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground hover:bg-destructive/10 hover:border-destructive/50"
+          onClick={() => {
+            setIsOpen(false);
+            logout();
+          }}
+        >
+          <LogOut className="w-4 h-4" />
+          Logout
+        </Button>
       </div>
     </>
   );

@@ -1,5 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card";
-import { Activity, CheckCircle2, FileText, UserPlus } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../../components/ui/card";
+import { Activity } from "lucide-react";
 
 interface RecentActivityProps {
   teams: any[];
@@ -9,33 +14,6 @@ export function RecentActivity({ teams }: RecentActivityProps) {
   // Simplified version - showing static placeholder
   // To properly implement this without hooks errors, we'd need a backend query
   // that fetches activities from all teams in a single call
-  
-  const mockActivities = [
-    {
-      id: '1',
-      icon: CheckCircle2,
-      color: 'text-green-500',
-      user: 'Team member',
-      message: 'completed a task',
-      time: '2 hours ago'
-    },
-    {
-      id: '2',
-      icon: FileText,
-      color: 'text-blue-500',
-      user: 'Team member',
-      message: 'uploaded files',
-      time: '5 hours ago'
-    },
-    {
-      id: '3',
-      icon: UserPlus,
-      color: 'text-purple-500',
-      user: 'Team member',
-      message: 'created a new task',
-      time: '1 day ago'
-    }
-  ];
 
   return (
     <Card>
@@ -49,7 +27,7 @@ export function RecentActivity({ teams }: RecentActivityProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {(!teams || teams.length === 0) ? (
+          {!teams || teams.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-8">
               No teams yet
             </p>

@@ -1,12 +1,15 @@
-import { Doc, Id } from "../../../../convex/_generated/dataModel";
+import { Doc, Id } from "../../../../../convex/_generated/dataModel";
 import { ProjectCard } from "./ProjectCard";
 
 interface ProjectGridProps {
-  teams: (Doc<"teams"> & { 
-    program?: Doc<"programs"> | null; 
-    supervisor?: Doc<"users"> | null; 
-    members?: (Doc<"users"> | null)[];
-  })[] | undefined | null;
+  teams:
+    | (Doc<"teams"> & {
+        program?: Doc<"programs"> | null;
+        supervisor?: Doc<"users"> | null;
+        members?: (Doc<"users"> | null)[];
+      })[]
+    | undefined
+    | null;
   userId: Id<"users">;
   todaysAttendance: Doc<"attendance">[] | undefined | null;
 }
@@ -18,7 +21,11 @@ const accentColors = [
   "bg-[hsl(var(--accent-green))]",
 ];
 
-export function ProjectGrid({ teams, userId, todaysAttendance }: ProjectGridProps) {
+export function ProjectGrid({
+  teams,
+  userId,
+  todaysAttendance,
+}: ProjectGridProps) {
   if (!teams || teams.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -27,8 +34,7 @@ export function ProjectGrid({ teams, userId, todaysAttendance }: ProjectGridProp
             className="w-8 h-8 text-muted-foreground"
             fill="none"
             viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
+            stroke="currentColor">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -37,9 +43,12 @@ export function ProjectGrid({ teams, userId, todaysAttendance }: ProjectGridProp
             />
           </svg>
         </div>
-        <h3 className="text-lg font-semibold text-foreground mb-2">No projects yet</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-2">
+          No projects yet
+        </h3>
         <p className="text-muted-foreground max-w-md">
-          You haven't joined any teams yet. Once you're part of a team, your projects will appear here.
+          You haven't joined any teams yet. Once you're part of a team, your
+          projects will appear here.
         </p>
       </div>
     );

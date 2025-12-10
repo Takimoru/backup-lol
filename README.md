@@ -30,6 +30,9 @@ A comprehensive system for managing university field study programs, built with 
 - A Convex account (sign up at [convex.dev](https://convex.dev))
 - A Google OAuth 2.0 Client ID
 
+> **Note**: For a detailed, step-by-step guide on cloning and setting up this project from scratch, please read [CLONING.md](./CLONING.md).
+
+
 ## Setup Instructions
 
 ### 1. Install Dependencies
@@ -42,7 +45,7 @@ pnpm install
 
 1. Install Convex CLI globally (if not already installed):
 ```bash
-npm install -g convex
+pnpm install -g convex
 ```
 
 2. Login to Convex:
